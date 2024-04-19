@@ -1,4 +1,4 @@
-package Enseignant;
+package Cours;
 
 
 import com.mysql.jdbc.ResultSetMetaData;
@@ -12,26 +12,26 @@ import java.util.ArrayList;
 public class MyTableModel extends AbstractTableModel {
     ResultSetMetaData rsmd;
     ArrayList<Object[]> data =new ArrayList<Object[]>();
-    EnseignantDAO dao;
-MyTableModel(ResultSet rs, EnseignantDAO dao)
-{
-    this.dao=dao;
-    try {
-        rsmd= (ResultSetMetaData) rs.getMetaData();
-        while (rs.next())
-        {
-            Object[] ligne=new Object[rsmd.getColumnCount()];
-            for(int i=0;i<ligne.length;i++)
+    CoursDAO dao;
+     MyTableModel(ResultSet rs, CoursDAO dao)
+    {
+        this.dao=dao;
+        try {
+            rsmd= (ResultSetMetaData) rs.getMetaData();
+            while (rs.next())
             {
-                ligne[i]=rs.getObject(i+1);
+                Object[] ligne=new Object[rsmd.getColumnCount()];
+                for(int i=0;i<ligne.length;i++)
+                {
+                    ligne[i]=rs.getObject(i+1);
 
+                }
+                data.add(ligne);
             }
-            data.add(ligne);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-    } catch (SQLException e) {
-        throw new RuntimeException(e);
     }
-}
     @Override
     public int getRowCount() {
         return data.size();
@@ -58,7 +58,7 @@ MyTableModel(ResultSet rs, EnseignantDAO dao)
         }
     }
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        if (getColumnName(columnIndex).equalsIgnoreCase("code"))
+        if (getColumnName(columnIndex).equalsIgnoreCase("idCours"))
         {
             return false;
         }
@@ -77,36 +77,30 @@ MyTableModel(ResultSet rs, EnseignantDAO dao)
     public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 
 
-        int id=Integer.parseInt(getValueAt(rowIndex,columnNameToIndex("code")).toString());
+        int id=Integer.parseInt(getValueAt(rowIndex,columnNameToIndex("idCours")).toString());
 
-        String nom=getValueAt(rowIndex,columnNameToIndex("nom")).toString();
-        String prenom=getValueAt(rowIndex,columnNameToIndex("prenom")).toString();
+        String nom=getValueAt(rowIndex,columnNameToIndex("nomCours")).toString();
+        String description=getValueAt(rowIndex,columnNameToIndex("description")).toString();
 
-        String email=getValueAt(rowIndex,columnNameToIndex("email")).toString();
-        String matiere=getValueAt(rowIndex,columnNameToIndex("matiere")).toString();
-
+        int id_enseignant=Integer.parseInt(getValueAt(rowIndex,columnNameToIndex("idenseignant")).toString());
 
 
 
 
-        if (getColumnName(columnIndex).equalsIgnoreCase("nom"))
+        if (getColumnName(columnIndex).equalsIgnoreCase("nomCours"))
         {
             nom=aValue.toString();
         }
-        if (getColumnName(columnIndex).equalsIgnoreCase("prenom"))
+        if (getColumnName(columnIndex).equalsIgnoreCase("description"))
         {
-            prenom=aValue.toString();
-        }  if (getColumnName(columnIndex).equalsIgnoreCase("email"))
+            description=aValue.toString();
+        }  if (getColumnName(columnIndex).equalsIgnoreCase("idenseignant"))
         {
-            email=aValue.toString();
-        }
-        if (getColumnName(columnIndex).equalsIgnoreCase("matiere"))
-        {
-            matiere=aValue.toString();
+            id_enseignant= Integer.parseInt(aValue.toString());
         }
 
 
-        int a=dao.modifierEnseignant(id,nom,prenom,email);
+        int a=dao.modifierCours(id,nom,description,id_enseignant);
         if (a>0)
         {
             data.get(rowIndex)[columnIndex]=aValue;
@@ -116,13 +110,13 @@ MyTableModel(ResultSet rs, EnseignantDAO dao)
             JOptionPane.showMessageDialog(null,"erreur dans la modification");
         }
     }
-   /* public void insertEtudiant(String nom,String prenom,String email,char[] password)
+    public void insertCours(int id, String nom, String description, int id_enseignant)
     {
 
-        int a= dao.ajouterEtudiant(nom,prenom,email,password);
+        int a= dao.ajouterCours(id,nom,description,id_enseignant);
         if (a>0)
         {
-            data.add(new Object[]{nom,prenom,email,password});
+            data.add(new Object[]{id,nom,description,id_enseignant});
             //refresh
             fireTableDataChanged();
             JOptionPane.showMessageDialog(null,"Insersion effectuee avec succes");
@@ -130,12 +124,12 @@ MyTableModel(ResultSet rs, EnseignantDAO dao)
         else
             JOptionPane.showMessageDialog(null,"error");
 
-    }*/
+    }
 
-    public void supprimeEnseignant(int rowIndex)
+    public void supprimerCours(int rowIndex)
     {
-        int id=Integer.parseInt(getValueAt(rowIndex,columnNameToIndex("code")).toString());
-        int a=dao.supprimerEnseignant(id);
+        int id=Integer.parseInt(getValueAt(rowIndex,columnNameToIndex("idCours")).toString());
+        int a=dao.supprimerCours(id);
         if (a>0)
         {
             data.remove(rowIndex);
@@ -146,5 +140,3 @@ MyTableModel(ResultSet rs, EnseignantDAO dao)
             JOptionPane.showMessageDialog(null,"error");
     }
 }
-
-

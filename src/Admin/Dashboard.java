@@ -1,8 +1,10 @@
 package Admin;
 
+import Cours.AjoutCours;
+import Cours.GestionFormation;
+import Cours.GestionFormation;
 import Enseignant.AjoutEnseignant;
 import Enseignant.GestionEnseignant;
-import Enseignant.RechEnseignant;
 import Etudiant.GestionEtudiant;
 
 import javax.swing.*;
@@ -13,12 +15,13 @@ import java.awt.event.ActionListener;
 public class Dashboard extends JFrame {
     JMenuBar menuBar;
     JDesktopPane desktopPane;
-    JMenu enseignant,etudiant,cours;
-   JMenuItem listeEtudiant,ajoutEnseignant,listeEnseignant,RechercherEnseignant;
+    JMenu enseignant,etudiant,formation;
+   JMenuItem listeEtudiant,ajoutEnseignant,listeEnseignant,ListFormation,ajoutFormation;
     JLabel limage;
     JPanel pimage;
 
     ImageIcon img;
+    JLabel bvn;
 
     Dashboard()
     {
@@ -31,7 +34,7 @@ public class Dashboard extends JFrame {
 
         enseignant=new JMenu("Enseignants");
         etudiant=new JMenu("Etudiants");
-        cours=new JMenu("Cours");
+        formation=new JMenu("Formation");
         listeEtudiant=new JMenuItem("liste des Etudiants");
 
 
@@ -39,7 +42,7 @@ public class Dashboard extends JFrame {
 
         menuBar.add(enseignant);
         menuBar.add(etudiant);
-        menuBar.add(cours);
+        menuBar.add(formation);
         etudiant.add(listeEtudiant);
         desktopPane=new JDesktopPane();
         add(desktopPane,BorderLayout.CENTER);
@@ -54,10 +57,10 @@ public class Dashboard extends JFrame {
         });
         ajoutEnseignant=new JMenuItem("Ajouter Enseignant");
         listeEnseignant=new JMenuItem("Liste des Enseigants");
-        RechercherEnseignant=new JMenuItem("Rechercher d'un enseignant");
+
         enseignant.add(ajoutEnseignant);
         enseignant.add(listeEnseignant);
-        enseignant.add(RechercherEnseignant);
+
         ajoutEnseignant.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -72,18 +75,41 @@ listeEnseignant.addActionListener(new ActionListener() {
         desktopPane.add(gestionEnseignant);
     }
 });
+        ListFormation=new JMenuItem("Liste des Formations");
 
-        RechercherEnseignant.addActionListener(new ActionListener() {
+    formation.add(ListFormation);
+    ListFormation.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            GestionFormation formation=new GestionFormation();
+            desktopPane.add(formation);
+        }
+    });
+
+        ajoutFormation=new JMenuItem("Ajout de Formation");
+        formation.add(ajoutFormation);
+        ajoutFormation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                RechEnseignant rechEnseignant=new RechEnseignant();
-                desktopPane.add(rechEnseignant);
+                AjoutCours addCours=new AjoutCours();
+                desktopPane.add(addCours);
             }
         });
 
+        limage=new JLabel();
+        img=new ImageIcon("src/images/admin.jpeg");
+        Image image=img.getImage().getScaledInstance(80,65,Image.SCALE_SMOOTH);
+        ImageIcon newImg =new ImageIcon(image);
+        limage.setIcon(newImg);
 
 
+        bvn=new JLabel("Bienvenue ");
+        bvn.setFont(new Font("Arial",Font.BOLD,25));
+        JPanel pbvn = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 10));
+        pbvn.add(bvn);
 
+       pbvn.add(limage);
+    add(pbvn,BorderLayout.NORTH);
         this.setVisible(true);
 
     }

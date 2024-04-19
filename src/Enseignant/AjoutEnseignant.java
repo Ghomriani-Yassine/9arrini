@@ -1,8 +1,6 @@
 package Enseignant;
 
 
-import Etudiant.EtudiantDAO;
-import authentification.Etudiant;
 import db_config.Config;
 
 import javax.swing.*;

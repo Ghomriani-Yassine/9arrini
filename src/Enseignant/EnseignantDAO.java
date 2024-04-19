@@ -46,7 +46,7 @@ public class EnseignantDAO implements ENSEIGNANTDAOCRUD{
 
     @Override
     public int supprimerEnseignant(int id) {
-        String req="delete from enseignant where id = ?";
+        String req="delete from enseignant where code = ?";
         try {
             PreparedStatement ps= null;
 
@@ -62,7 +62,7 @@ public class EnseignantDAO implements ENSEIGNANTDAOCRUD{
 
     @Override
     public int modifierEnseignant(int id, String nom, String prenom, String email) {
-        String req = "UPDATE enseignant SET nom = ?, prenom = ?, email = ?  WHERE id = ?";
+        String req = "UPDATE enseignant SET nom = ?, prenom = ?, email = ?  WHERE code = ?";
 
         try {
             if(connection!=null) {
@@ -118,7 +118,7 @@ public class EnseignantDAO implements ENSEIGNANTDAOCRUD{
             {
 
             // SQL query
-            String query = "SELECT * FROM enseignant WHERE id = ?";
+            String query = "SELECT * FROM enseignant WHERE code = ?";
 
             // Prepare the statement
             statement = connection.prepareStatement(query);

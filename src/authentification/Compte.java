@@ -1,5 +1,6 @@
 package authentification;
 
+import Etudiant.Etudiant;
 import Etudiant.EtudiantDAO;
 import db_config.Config;
 

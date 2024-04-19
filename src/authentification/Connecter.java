@@ -1,5 +1,7 @@
 package authentification;
 
+import Etudiant.Etudiant;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;

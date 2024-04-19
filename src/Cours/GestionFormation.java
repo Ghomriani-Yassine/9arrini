@@ -1,6 +1,4 @@
-package Enseignant;
-
-
+package Cours;
 
 
 import db_config.Config;
@@ -13,13 +11,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 
-public class GestionEnseignant extends JInternalFrame {
-    JTable jt_enseignant;
+public class GestionFormation extends JInternalFrame {
+    JTable jt_cours;
     JLabel title;
     JPanel ptitle;
     MyTableModel model;
-    public GestionEnseignant() {
-        this.setTitle("Gestion Enseignant");
+    public GestionFormation()
+    {
+        this.setTitle("Gestion Formations");
         this.setSize(980, 800);
         this.setDefaultCloseOperation(JInternalFrame.DISPOSE_ON_CLOSE);
 
@@ -27,33 +26,33 @@ public class GestionEnseignant extends JInternalFrame {
         this.setResizable(true);
         this.setMaximizable(true);
         this.setIconifiable(true);
-        title = new JLabel("Liste des Enseignants");
+        title = new JLabel("Liste des Formation");
         title.setFont(new Font("Arial", Font.BOLD, 48));
         ptitle = new JPanel();
         ptitle.add(title);
         add(ptitle, BorderLayout.NORTH);
-        jt_enseignant = new JTable();
-        add(new JScrollPane(jt_enseignant));
-        EnseignantDAO dao = new EnseignantDAO(Config.URL, Config.USERNAME, Config.PASSWORD);
-        String req = "select code,nom,prenom,email,matiere from enseignant";
+        jt_cours = new JTable();
+        add(new JScrollPane(jt_cours));
+        CoursDAO dao = new CoursDAO(Config.URL, Config.USERNAME, Config.PASSWORD);
+        String req = "select idCours, nomCours,description,idenseignant,nom,email from cours,enseignant where idenseignant=code";
         ResultSet rs = dao.selection(req);
         model = new MyTableModel(rs, dao);
-        jt_enseignant.setModel(model);
-        jt_enseignant.addMouseListener(new MouseAdapter() {
+        jt_cours.setModel(model);
+        jt_cours.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getButton() == MouseEvent.BUTTON3) {
-                    int rowIndex = jt_enseignant.getSelectedRow();
+                    int rowIndex = jt_cours.getSelectedRow();
                     JPopupMenu popup = new JPopupMenu();
                     JMenuItem supp = new JMenuItem("supprimer");
                     popup.add(supp);
-                    popup.show(jt_enseignant, e.getX(), e.getY());
+                    popup.show(jt_cours, e.getX(), e.getY());
                     supp.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            int answer = JOptionPane.showConfirmDialog(GestionEnseignant.this, "AVEZ VOUS SUPPRIMER CETTE LIGNE ?", "Error", JOptionPane.YES_NO_OPTION);
+                            int answer = JOptionPane.showConfirmDialog(GestionFormation.this, "AVEZ VOUS SUPPRIMER CETTE LIGNE ?", "Error", JOptionPane.YES_NO_OPTION);
                             if (answer == 0) {
-                                model.supprimeEnseignant(rowIndex);
+                                model.supprimerCours(rowIndex);
                             }
                         }
                     });
@@ -63,5 +62,6 @@ public class GestionEnseignant extends JInternalFrame {
 
 
         this.setVisible(true);
+
     }
 }

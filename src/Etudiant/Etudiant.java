@@ -1,4 +1,4 @@
-package authentification;
+package Etudiant;
 
 public class Etudiant {
     int id;
