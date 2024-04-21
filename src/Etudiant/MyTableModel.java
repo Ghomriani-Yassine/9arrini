@@ -1,15 +1,17 @@
 package Etudiant;
 
 import Etudiant.EtudiantDAO;
-import com.mysql.jdbc.ResultSetMetaData;
+
 
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MyTableModel extends AbstractTableModel {
+
     ResultSetMetaData rsmd;
     ArrayList<Object[]> data =new ArrayList<Object[]>();
     EtudiantDAO dao;
