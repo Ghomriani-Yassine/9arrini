@@ -1,19 +1,19 @@
 package Enseignant;
 
 public class Enseignant {
-    int id;
+    int code;
     String nom,prenom,email,matiere;
 
-    public Enseignant(int id, String nom, String prenom, String email,String matiere) {
-        this.id = id;
+    public Enseignant(int code, String nom, String prenom, String email,String matiere) {
+        this.code = code;
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.matiere=matiere;
     }
 
-    public int getId() {
-        return id;
+    public int getCode() {
+        return code;
     }
 
     public String getNom() {
@@ -28,8 +28,8 @@ public class Enseignant {
         return email;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setCode(int id) {
+        this.code = id;
     }
 
     public void setNom(String nom) {
