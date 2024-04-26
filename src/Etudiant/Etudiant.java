@@ -2,7 +2,7 @@ package Etudiant;
 
 public class Etudiant {
     int id;
-    String nom,prenom,email;
+    public String nom ,prenom,email ;
     private  char [] password;
 
     public Etudiant(int id, String nom, String prenom, String email, char [] password) {

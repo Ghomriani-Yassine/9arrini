@@ -16,5 +16,8 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="javafx-sdk-22" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="library" name="mysql-connector-java-5.0.7-bin" level="project" />
   </component>
 </module>
