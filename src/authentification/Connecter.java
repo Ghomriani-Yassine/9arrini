@@ -1,22 +1,48 @@
 package authentification;
 
+
+import Enseignant.Enseignant;
+import Enseignant.EnseignantDAO;
 import Etudiant.Etudiant;
+import Etudiant.EtudiantDAO;
+import db_config.Config;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Connecter extends JFrame {
-    JLabel ltitle,lmail,lmdp;
+    JLabel ltitle,lmail,lmdp,lradioEtud,lradioEn;
     JTextField tfmail;
     JPasswordField passf;
-    JPanel ptitle,pmail,pmdp,pform,pbtn;
+    JPanel ptitle,pmail,pmdp,pform,pbtn,petudiant,penseignant;
     JButton btn;
-    ArrayList<Etudiant> data=new ArrayList<Etudiant>();
+    EnseignantDAO dataEnseignant;
+    EtudiantDAO dataEtudiant;
+    Enseignant enseignantRech;
+     Etudiant etudiantRech;
+     private Socket socket;
+     private PrintWriter out;
+     private BufferedReader in ;
+     JRadioButton etudiant,enseingant;
+    ButtonGroup buttonGroup;
 
     public Connecter(){
+        try {
+            socket=new Socket("127.0.0.1",9000);
+            out=new PrintWriter(socket.getOutputStream(),true);
+            in=new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error connecting to the server", "Error", JOptionPane.ERROR_MESSAGE);
+        }
         setTitle("Se Connecter ");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         getContentPane().setBackground(new Color(0x2979FF));
@@ -106,7 +132,27 @@ public class Connecter extends JFrame {
         pmdp.add(lmdp);
         pmdp.add(passf);
         pmdp.setOpaque(false);
-        pform=new JPanel(new FlowLayout(FlowLayout.CENTER,0,10));
+        penseignant=new JPanel(new FlowLayout(FlowLayout.CENTER,5,20));
+        lradioEn=new JLabel("Enseignant");
+        lradioEn.setOpaque(false);
+
+        enseingant=new JRadioButton();
+        enseingant.setOpaque(false);
+        penseignant.add(enseingant);
+        penseignant.add(lradioEn);
+        penseignant.setOpaque(false);
+        petudiant=new JPanel(new FlowLayout(FlowLayout.CENTER,5,20));
+        lradioEtud=new JLabel("Etudiant");
+        lradioEtud.setOpaque(false);
+        etudiant=new JRadioButton();
+        etudiant.setOpaque(false);
+        petudiant.add(etudiant);
+        petudiant.add(lradioEtud);
+        petudiant.setOpaque(false);
+        buttonGroup=new ButtonGroup();
+        buttonGroup.add(enseingant);
+        buttonGroup.add(etudiant);
+        pform=new JPanel(new FlowLayout(FlowLayout.CENTER,180,20));
         btn =new JButton("Valider");
         btn.setBackground(Color.white);
         btn.setForeground(new Color(0x2979FF));
@@ -117,43 +163,68 @@ public class Connecter extends JFrame {
         add(ptitle,BorderLayout.NORTH);
         pform.add(pmail);
         pform.add(pmdp);
+        pform.add(penseignant);
+        pform.add(petudiant);
         pform.setOpaque(false);
 
 
         add(pform,BorderLayout.CENTER);
         add(pbtn,BorderLayout.SOUTH);
         btn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!(exist(passf.getPassword()))) {
-                    JOptionPane.showMessageDialog(null, "mot de passe  inexistant", "Erreur", JOptionPane.ERROR_MESSAGE);
+                                  @Override
+                                  public void actionPerformed(ActionEvent e) {
+                                      String email = tfmail.getText().trim();
+                                      String password = new String(passf.getPassword()).trim();
+                                      String role = "";
+                                      if (enseingant.isSelected()) {
+                                          role = "enseignant";
 
-                } else if (tfmail.getText().isEmpty() || tfmail.getText().equals("Saisir Votre Email:") || passf.getPassword().equals("") || passf.getPassword().equals("Saisir Votre mot de passe:")) {
-                    JOptionPane.showMessageDialog(null, "Veuillez remplir tous les champs");
+                                      } else if (etudiant.isSelected()) {
+                                          role = "etudiant";
+
+                                      } else {
+                                          JOptionPane.showMessageDialog(null, "Veuillez sélectionner un rôle", "Erreur", JOptionPane.ERROR_MESSAGE);
+                                          return;
+                                      }
+                                      if (email.isEmpty() || password.isEmpty()) {
+                                          JOptionPane.showMessageDialog(null, "Veuillez remplir tous les champs");
+                                      } else if (!email.contains("@")) {
+                                          JOptionPane.showMessageDialog(null, "Email invalide", "Erreur", JOptionPane.ERROR_MESSAGE);
+                                      } else {
+
+                                              out.println(email);
+                                              out.flush();
+                                              out.println(password);
+                                              out.flush();
+                                              out.println(role);
+                                              out.flush();
 
 
-                } else if (!tfmail.getText().contains("@")) {
-                    JOptionPane.showMessageDialog(null, "Email Invalide", "Erreur", JOptionPane.ERROR_MESSAGE);
 
-                } else {
 
-                    System.out.println(passf.getPassword());
+                                          try {
+                                              String authentificationResult = in.readLine();
+                                              if (authentificationResult.equals("SUCCESS")) {
+                                                  JOptionPane.showMessageDialog(null, "Authentification réussie");
 
-                }
-            }
-            public boolean exist(char[] password)
-            {
-                for (Etudiant etudiant:data)
-                {
-                    if (Arrays.equals(etudiant.getPassword(), password))
-                    {
+                                              } else {
+                                                  JOptionPane.showMessageDialog(null, "Authentification échouée", "Erreur", JOptionPane.ERROR_MESSAGE);
 
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
+                                              }
+                                          } catch (IOException ex) {
+                                              throw new RuntimeException(ex);
+                                          }
+
+
+                                      }
+
+                                      }
+
+
+
+
+                              });
+
 
         setVisible(true);
     }

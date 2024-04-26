@@ -1,5 +1,6 @@
 package Etudiant;
 
+import Enseignant.Enseignant;
 import db_config.MyConnection;
 
 import java.sql.*;
@@ -61,7 +62,48 @@ public class EtudiantDAO implements ETUDIANTDAOCRUD {
         return null;
 
     }
+    public Etudiant Recherche(char[] password,String email) {
 
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Etudiant etudiant = null;
+
+        try {
+            // Establish connection
+            if(connection!=null)
+            {
+
+                // SQL query
+                String query = "SELECT * FROM etudiant WHERE password = ? AND email=?";
+
+                // Prepare the statement
+                statement = connection.prepareStatement(query);
+                statement.setString(1, Arrays.toString(password));
+                statement.setString(2,email);
+
+                // Execute the query
+                resultSet = statement.executeQuery();
+
+                // Check if the result set has any rows
+                if (resultSet.next()) {
+                    // Retrieve the data from the result set
+                    int id=resultSet.getInt("id");
+                    String nom = resultSet.getString("nom");
+                    String prenom = resultSet.getString("prenom");
+
+
+
+                    // Create a new Enseignant object
+                    etudiant = new Etudiant(id, nom, prenom, email, password);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        return etudiant;
+    }
     @Override
     public int supprimerEtudiant(int id) {
         String req="delete from etudiant where id = ?";
